@@ -1,0 +1,78 @@
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GraphQL Demo – Products</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:24px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+    .card{border:1px solid #e5e7eb;border-radius:12px;padding:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    .muted{color:#6b7280;font-size:.9rem}
+    header{display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+    select,button{padding:8px 10px;border-radius:8px;border:1px solid #d1d5db;background:#fff}
+  </style>
+</head>
+<body>
+  <h1>Products</h1>
+  <header>
+    <button id="btnSort">Giá tăng dần</button>
+    <label>
+      Category:
+      <select id="selCat"></select>
+    </label>
+    <button id="btnByCat">Tải theo Category</button>
+  </header>
+
+  <div id="out" class="grid"></div>
+
+  <script>
+    const GQL = async (query, variables={}) => {
+      const res = await fetch('/graphql', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ query, variables })
+      });
+      const json = await res.json();
+      if (json.errors) { console.error(json.errors); alert('GraphQL error: '+json.errors[0].message); }
+      return json.data;
+    };
+
+    const renderProducts = (arr=[]) => {
+      const out = document.getElementById('out');
+      out.innerHTML = arr.map(p=>`
+        <div class="card">
+          <h3>${p.title}</h3>
+          <div class="muted">Price: $${p.price?.toFixed ? p.price.toFixed(2) : p.price}</div>
+          <div>Qty: ${p.quantity ?? 0}</div>
+          <div class="muted">Category: ${p.category?.name ?? 'N/A'}</div>
+          <div class="muted">Owner: ${p.user?.fullname ?? 'N/A'}</div>
+          <p>${p.desc ?? ''}</p>
+        </div>`).join('');
+    };
+
+    async function loadCategories(){
+      const q = `query { categories { id name } }`;
+      const data = await GQL(q);
+      const sel = document.getElementById('selCat');
+      sel.innerHTML = data.categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+    }
+
+    async function loadByPrice(){
+      const q = `query { productsByPriceAsc { id title price quantity desc category{ name } user{ fullname } } }`;
+      const data = await GQL(q); renderProducts(data.productsByPriceAsc);
+    }
+
+    async function loadByCategory(){
+      const id = document.getElementById('selCat').value;
+      const q = `query($cid: ID!){ productsByCategory(categoryId: $cid) { id title price quantity desc category{ name } user{ fullname } } }`;
+      const data = await GQL(q,{ cid: id }); renderProducts(data.productsByCategory);
+    }
+
+    document.getElementById('btnSort').onclick = loadByPrice;
+    document.getElementById('btnByCat').onclick = loadByCategory;
+
+    // Khởi động
+    loadCategories();
+    loadByPrice();
+  </script>
+</body>
+</html>
