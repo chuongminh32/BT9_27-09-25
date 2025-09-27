@@ -1,30 +1,59 @@
 package vn.iotstar.entity;
 
+
+
 import jakarta.persistence.*;
-import lombok.*;
 import java.math.BigDecimal;
+
 
 @Entity
 @Table(name = "products")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Product {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+private Long id;
 
-    @Column(nullable = false)
-    private String title;
 
-    private Integer quantity;
+@Column(nullable = false, length = 150)
+private String title;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String desc;
 
-    @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal price;
+private Integer quantity;
 
-    @ManyToOne @JoinColumn(name = "user_id")
-    private User user;
 
-    @ManyToOne @JoinColumn(name = "category_id")
-    private Category category;
+@Column(name = "description", columnDefinition = "TEXT")
+private String desc;
+
+
+@Column(precision = 12, scale = 2)
+private BigDecimal price;
+
+
+// Thuộc về một User (người tạo/sở hữu)
+@ManyToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "user_id")
+private User user;
+
+
+// Mỗi product thuộc 1 category (đáp ứng yêu cầu truy vấn theo category)
+@ManyToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "category_id")
+private Category category;
+
+
+// getters/setters
+public Long getId() { return id; }
+public void setId(Long id) { this.id = id; }
+public String getTitle() { return title; }
+public void setTitle(String title) { this.title = title; }
+public Integer getQuantity() { return quantity; }
+public void setQuantity(Integer quantity) { this.quantity = quantity; }
+public String getDesc() { return desc; }
+public void setDesc(String desc) { this.desc = desc; }
+public BigDecimal getPrice() { return price; }
+public void setPrice(BigDecimal price) { this.price = price; }
+public User getUser() { return user; }
+public void setUser(User user) { this.user = user; }
+public Category getCategory() { return category; }
+public void setCategory(Category category) { this.category = category; }
 }

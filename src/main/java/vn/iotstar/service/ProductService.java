@@ -13,7 +13,7 @@ public class ProductService {
 
     public List<Product> all(){ return productRepo.findAll(); }
     public List<Product> byPriceAsc(){ return productRepo.findAllByOrderByPriceAsc(); }
-    public List<Product> byCategory(Long categoryId){ return productRepo.findByCategoryId(categoryId); }
+    public List<Product> byCategory(Long categoryId){ return productRepo.findByCategory_Id(categoryId); }
     public Optional<Product> one(Long id){ return productRepo.findById(id); }
     public Product save(Product p){ return productRepo.save(p); }
     public boolean delete(Long id){ if(!productRepo.existsById(id)) return false; productRepo.deleteById(id); return true; }

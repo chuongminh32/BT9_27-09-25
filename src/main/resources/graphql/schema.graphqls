@@ -1,30 +1,65 @@
-type Category { id: ID! name: String! }
+# ====== Types ======
 
-type Product {
-  id: ID!
-  title: String!
-  price: Float!
-  quantity: Int
-  desc: String
-  category: Category
-  user: User
-}
 
 type User {
-  id: ID!
-  fullname: String!
-  email: String!
-  phone: String
+id: ID!
+fullname: String!
+email: String!
+password: String!
+phone: String
+categories: [Category!]
 }
+
+
+type Category {
+id: ID!
+name: String!
+images: String
+users: [User!]
+}
+
+
+type Product {
+id: ID!
+title: String!
+quantity: Int
+desc: String
+price: Float
+user: User
+category: Category
+}
+
+
+# ====== Query ======
+
 
 type Query {
-  categories: [Category]
-  productsByPriceAsc: [Product]
-  productsByCategory(categoryId: ID!): [Product]
+allUsers: [User!]!
+allCategories: [Category!]!
+allProducts: [Product!]!
+productsByPriceAsc: [Product!]!
+productsByCategory(categoryId: ID!): [Product!]!
 }
 
+
+# ====== Mutation ======
+
+
 type Mutation {
-  createUser(fullname: String!, email: String!, password: String!, phone: String): User
-  createCategory(name: String!): Category
-  createProduct(title: String!, price: Float!, quantity: Int, desc: String, userId: ID!): Product
+# User
+createUser(fullname: String!, email: String!, password: String!, phone: String): User!
+updateUser(id: ID!, fullname: String, email: String, password: String, phone: String): User!
+deleteUser(id: ID!): Boolean!
+
+
+# Category
+createCategory(name: String!, images: String): Category!
+updateCategory(id: ID!, name: String, images: String): Category!
+deleteCategory(id: ID!): Boolean!
+
+
+# Product
+createProduct(title: String!, quantity: Int, desc: String, price: Float, userId: ID!, categoryId: ID!): Product!
+updateProduct(id: ID!, title: String, quantity: Int, desc: String, price: Float, userId: ID, categoryId: ID): Product!
+deleteProduct(id: ID!): Boolean!
 }
