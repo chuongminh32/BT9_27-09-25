@@ -13,6 +13,11 @@ public class UserService {
     public List<User> all() { return userRepo.findAll(); }
     public Optional<User> one(Long id) { return userRepo.findById(id); }
     public User save(User u) { return userRepo.save(u); }
+
+    public User login(String email, String password) {
+        return userRepo.findByEmailAndPassword(email, password).orElse(null);
+    }
+
     public boolean delete(Long id) {
         if (!userRepo.existsById(id)) return false;
         userRepo.deleteById(id); return true;

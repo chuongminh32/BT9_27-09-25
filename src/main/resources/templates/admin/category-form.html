@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thêm / Sửa danh mục</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
+<body class="container py-4">
+
+<h2>Thêm / Sửa danh mục</h2>
+
+<form th:action="@{/admin/categories/save}" th:object="${category}" method="post">
+    <div class="mb-3">
+        <label class="form-label">Tên danh mục</label>
+        <input type="text" th:field="*{name}" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ảnh (URL)</label>
+        <input type="text" th:field="*{images}" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-success">Lưu</button>
+    <a href="/admin/categories" class="btn btn-secondary">Hủy</a>
+</form>
+
+</body>
+</html>

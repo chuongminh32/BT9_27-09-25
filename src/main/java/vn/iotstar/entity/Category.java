@@ -24,6 +24,10 @@ private String images; // URL ảnh
 @ManyToMany(mappedBy = "categories")
 private Set<User> users = new HashSet<>();
 
+@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+private Set<Product> products = new HashSet<>();
+
+
 
 // getters/setters
 public Long getId() { return id; }
